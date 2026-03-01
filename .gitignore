@@ -1,0 +1,17 @@
+.env
+.venv/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.DS_Store
+data/processed/*.jsonl
+data/vectorstore/agentdesk/*
+!data/vectorstore/agentdesk/.gitkeep
+data/orders.db
+data/orders.db-*
+data/checkpoints.db
+data/checkpoints.db-*
+data/llm_cache.json
+logs/
+dist/
+build/
