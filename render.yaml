@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: agentdesk
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: AGENTDESK_CONFIG_PATH
+        value: config/agentdesk.yaml
