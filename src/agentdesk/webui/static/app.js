@@ -1,3 +1,4 @@
+// AgentDesk - Frontend Application Logic
 (() => {
   "use strict";
 
