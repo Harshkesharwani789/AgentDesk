@@ -123,3 +123,4 @@ def load_config(config_path: str | None = None) -> AgentDeskConfig:
 
 def load_settings() -> EnvironmentSettings:
     return EnvironmentSettings()
+# End of configuration module
