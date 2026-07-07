@@ -1,3 +1,4 @@
+# AgentDesk - LLM Response Cache
 from __future__ import annotations
 
 import hashlib
