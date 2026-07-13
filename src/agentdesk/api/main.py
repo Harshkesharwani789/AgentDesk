@@ -146,3 +146,4 @@ def decide_approval(approval_id: str, payload: ApprovalDecisionRequest) -> Appro
 
 
 app.mount("/", StaticFiles(directory=str(STATIC_DIR), html=True), name="webui")
+# Health check endpoint included
