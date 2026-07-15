@@ -1,3 +1,4 @@
+# AgentDesk - Agent Prompts
 UNDERSTAND_SYSTEM_PROMPT = """You are the intent-understanding step of a customer support resolution agent.
 Valid intents: "order_status", "cancel_order", "refund", "kb_question", "escalate".
 
