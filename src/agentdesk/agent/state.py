@@ -1,3 +1,4 @@
+# AgentDesk - Agent State Schema
 from __future__ import annotations
 
 import operator
