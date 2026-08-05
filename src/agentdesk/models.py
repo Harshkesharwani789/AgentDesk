@@ -1,3 +1,4 @@
+# AgentDesk - Core Data Models
 from __future__ import annotations
 
 from typing import Any, Literal
