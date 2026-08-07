@@ -1,3 +1,4 @@
+# AgentDesk - Semantic Search
 from __future__ import annotations
 
 from agentdesk.ingestion.vectorstore import ChromaIndex, EmbeddingService
