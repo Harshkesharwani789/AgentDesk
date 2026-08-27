@@ -26,7 +26,7 @@ from agentdesk.retrieval.pipeline import RetrievalService
 logger = logging.getLogger(__name__)
 
 MAX_CUSTOMER_TURNS = 3
-JUDGE_MODEL = "llama-3.1-8b-instant"
+JUDGE_MODEL = "llama-3.3-70b-versatile"
 
 EXPECTED_TOOLS = {
     "order_status": {"order_lookup"},

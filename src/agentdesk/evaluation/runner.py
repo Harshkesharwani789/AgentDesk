@@ -58,7 +58,7 @@ class _SentenceTransformerRagasEmbeddings(BaseRagasEmbeddings):
         return await asyncio.to_thread(self._service.embed_documents, texts)
 
 
-RAGAS_JUDGE_MODEL = "llama-3.1-8b-instant"
+RAGAS_JUDGE_MODEL = "llama-3.3-70b-versatile"
 
 
 def _build_judge(config: AgentDeskConfig, settings: EnvironmentSettings):
@@ -66,16 +66,13 @@ def _build_judge(config: AgentDeskConfig, settings: EnvironmentSettings):
 
     This eval runs on a dedicated GROQ_EVAL_API_KEY (see
     EnvironmentSettings.for_eval), so judge + generation calls sharing a
-    model's quota no longer risks starving the live demo. What *does* matter
-    now is Groq's free-tier daily token budget per model: llama-3.3-70b-
-    versatile is capped at 100k TPD, and a single RAGAS variant (30 rows x 4
-    metrics, each involving statement generation + verdicts) burns almost
-    exactly that in one run — enough for one variant, not three. llama-3.1-
-    8b-instant has a 500k TPD budget, comfortably covering all three
-    variants, and is more than capable of the structured judgments RAGAS
-    metrics need. We also reuse the project's own embedding model rather
-    than pulling in OpenAI (ragas' default), so the eval has no extra API
-    dependency."""
+    model's quota no longer risks starving the live demo. Note: llama-3.1-8b-
+    instant was previously used here for its higher 500k TPD free-tier quota,
+    but it has been deprecated by Groq. We now use llama-3.3-70b-versatile
+    (the same as the agent brain) which provides sufficient quality for RAGAS
+    structured judgments. We also reuse the project's own embedding model
+    rather than pulling in OpenAI (ragas' default), so the eval has no extra
+    API dependency."""
     llm = LangchainLLMWrapper(ChatGroq(model_name=RAGAS_JUDGE_MODEL, groq_api_key=settings.groq_api_key, temperature=0.0))
     embeddings = _SentenceTransformerRagasEmbeddings(EmbeddingService(config.models.embedding_model))
     return llm, embeddings

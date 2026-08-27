@@ -165,7 +165,7 @@ curl -X POST http://127.0.0.1:8000/approvals/<approval_id> \
 | **Frontend** | Vanilla HTML/CSS/JS — no React/Gradio/Streamlit |
 | **Agent** | LangGraph (StateGraph, interrupt/Command, SqliteSaver) |
 | **Retrieval** | BAAI/bge-small-en-v1.5 + ChromaDB, BM25, RRF, cross-encoder reranker |
-| **LLMs** | Groq llama-3.3-70b (agent), Groq llama-3.1-8b (RAG), Gemini flash-lite (fallback) |
+| **LLMs** | Groq llama-3.3-70b (agent + RAG), Gemini flash-lite (fallback) |
 | **Database** | SQLAlchemy + SQLite |
 | **Evaluation** | RAGAS (retrieval) + custom scenario harness (agent) |
 | **CI/CD** | GitHub Actions, Docker, Render |
