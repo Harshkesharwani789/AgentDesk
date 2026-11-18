@@ -31,7 +31,7 @@ from agentdesk.retrieval.pipeline import RetrievalService
 
 logger = logging.getLogger(__name__)
 
-VALID_INTENTS = {"order_status", "cancel_order", "refund", "kb_question", "escalate"}
+VALID_INTENTS = {"order_status", "cancel_order", "refund", "kb_question", "escalate", "clarify"}
 ORDER_REQUIRED_INTENTS = {"order_status", "cancel_order", "refund"}
 
 
@@ -53,6 +53,27 @@ def _last_user_message(messages: list[dict]) -> str:
 def understand_node(state: AgentState, deps: AgentDeps) -> dict:
     messages = state.get("messages", [])
     user_prompt = build_understand_user_prompt(messages)
+    # A terse reply such as "I can't" after a completed action is ambiguous,
+    # not a request for a human. Asking a focused follow-up is more helpful
+    # than creating an escalation ticket from a fragment of conversation.
+    latest_message = _last_user_message(messages).strip().lower()
+    ambiguous_follow_ups = {"i cant", "i can't", "cant", "can't", "help", "what?", "what"}
+    if latest_message in ambiguous_follow_ups and len(messages) > 1:
+        return {
+            "intent": "clarify",
+            "order_id": None,
+            "amount": None,
+            "reason": "The customer's follow-up needs clarification.",
+            "confidence": 1.0,
+            "missing_field": None,
+            "order_snapshot": None,
+            "kb_chunks": [],
+            "tool_log": [],
+            "consecutive_failures": 0,
+            "escalated": False,
+            "escalation_reason": None,
+        }
+
     raw = deps.llm_client.complete(UNDERSTAND_SYSTEM_PROMPT, user_prompt, json_mode=True)
 
     try:
@@ -96,13 +117,16 @@ def understand_node(state: AgentState, deps: AgentDeps) -> dict:
 def route_after_understand(state: AgentState) -> Literal["ask", "act", "escalate"]:
     if state.get("intent") == "escalate":
         return "escalate"
-    if state.get("intent") in ORDER_REQUIRED_INTENTS and state.get("order_id") is None:
+    if state.get("intent") == "clarify" or (state.get("intent") in ORDER_REQUIRED_INTENTS and state.get("order_id") is None):
         return "ask"
     return "act"
 
 
 def ask_node(state: AgentState, deps: AgentDeps) -> dict:
-    question = "Could you share your order number so I can look into this for you?"
+    if state.get("intent") == "clarify":
+        question = "I want to make sure I help correctly. Could you tell me what you can't do or what you'd like to do next?"
+    else:
+        question = "Could you share your order number so I can look into this for you?"
     return {"messages": [{"role": "assistant", "content": question}], "final_response": question}
 
 
